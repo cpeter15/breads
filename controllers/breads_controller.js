@@ -3,21 +3,17 @@ const breads = express.Router();
 const Bread = require('../models/breads');
 const Baker = require('../models/baker.js')
 
-breads.get('/', (req, res) => {
-    Baker.find()
-        .then(foundBakers => {
-            Bread.find()
-                .then(foundBreads => {
-                    res.render('index',
-                        {
-                            breads: foundBreads,
-                            bakers: foundBakers,
-                            title: 'Index Page'
-                        }
-                    )
-                })
-        })
-});
+breads.get('/', async (req, res) => {
+    const foundBakers = await Baker.find().lean()
+    const foundBreads = await Bread.find().limit(10).lean()
+    res.render('index', {
+        breads: foundBreads,
+        bakers: foundBakers,
+        title: 'Index Page'
+    })
+})
+
+
 
 breads.get('/new', (req, res) => {
     Baker.find()
